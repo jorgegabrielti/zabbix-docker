@@ -1,7 +1,6 @@
 #!/bin/bash
 
-mkdir -p /opt/project/zabbix-docker
-cd /opt/project/zabbix-docker
+
 
 ### Distro detect
 DISTRO=$(grep -Ei 'PRETTY_NAME' /etc/os-release | cut -d'=' -f2 | tr -d '"')
@@ -18,9 +17,9 @@ case ${DISTRO} in
         dnf install -y curl
     ;;
     "CentOS Linux 7 (Core)")
-        yum install -y langpacks-en glibc-all-langpacks 
-	localectl set-locale LANG=pt_BR.UTF-8
-	yum install -y curl wget tcpdump net-tools
+        yum install -y langpacks-en glibc-all-langpacks
+        localectl set-locale LANG=pt_BR.UTF-8
+        yum install -y curl wget tcpdump net-tools
     ;;
     *)
         echo "Distro: [${DISTRO}] ==> Not supported!"
@@ -30,12 +29,15 @@ esac
 ### Docker install
 chmod +x docker-install.sh
 ./docker-install.sh
-
+rm -f get-docker.sh
 ### Three directory setup
+
+mkdir -p /opt/project/zabbix-docker
+cd /opt/project/zabbix-docker
 mkdir -p zabbix-server/{externalscripts,alertscripts}
 
 # Directories Grafana
 mkdir -p grafana/{data,certs} && \
-        chown -R 472:472 ../grafana && \
-        chmod -R 775 ../grafana && \
-        chown -R 472:472 ../grafana/certs
+        chown -R 472:472 grafana && \
+        chmod -R 775 grafana && \
+        chown -R 472:472 grafana/certs

@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+### VM Setup variables
+BOX_NAME       = "centos"
+BOX            = "jgabriel/centos8-stream" # You can search for boxes at https://vagrantcloud.com/search
+HOSTNAME       = "centos8"
+PORT_FORWARD   = "10022"
+DIR_HOST       = "../"
+DIR_GUEST      = "/vagrant_data"
+CPU            = "1"
+RAM            = "1024"
+
+
+# Locale
+ENV["LC_ALL"] = "en_US.UTF-8"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+   
+   config.vm.define (BOX_NAME) do |box|
+      box.vm.box              = (BOX)
+      box.vm.hostname         = (HOSTNAME) 
+      box.vm.box_version      = "1.0"
+      box.vm.box_check_update = false
+      box.vm.network "forwarded_port", guest: 22, host: (PORT_FORWARD), host_ip: "127.0.0.1"
+      box.vm.synced_folder (DIR_HOST), (DIR_GUEST)
+      
+      box.vm.provider "virtualbox" do |vb|
+         vb.gui    = true
+         vb.cpus   = (CPU)
+         vb.memory = (RAM)
+      end
+      
+      box.vm.provision "shell", inline: <<-SHELL
+         sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g'\
+                  /etc/ssh/sshd_config
+         systemctl restart sshd
+      SHELL
+   end
+end

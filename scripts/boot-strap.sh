@@ -1,5 +1,9 @@
 #!/bin/bash
 
+mkdir -p /opt/project/zabbix-docker
+cd /opt/project/zabbix-docker
+
+### Distro detect
 DISTRO=$(grep -Ei 'PRETTY_NAME' /etc/os-release | cut -d'=' -f2 | tr -d '"')
 
 case ${DISTRO} in
@@ -22,3 +26,16 @@ case ${DISTRO} in
         echo "Distro: [${DISTRO}] ==> Not supported!"
     ;;
 esac
+
+### Docker install
+chmod +x docker-install.sh
+./docker-install.sh
+
+### Three directory setup
+mkdir -p zabbix-server/{externalscripts,alertscripts}
+
+# Directories Grafana
+mkdir -p grafana/{data,certs} && \
+        chown -R 472:472 ../grafana && \
+        chmod -R 775 ../grafana && \
+        chown -R 472:472 ../grafana/certs

@@ -11,4 +11,11 @@ cd zabbix-docker/scripts
 ```
 
 ### Docker Compose File
+Create a new docker network 
+```bash
+docker network create --driver bridge monitoring
+```
 
+```bash
+docker-compose up -d
+```

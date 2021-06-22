@@ -1,0 +1,47 @@
+---
+version: "3.8"
+
+services:
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:centos-5.0-latest
+    env_file:
+      - ./zabbix-server/envs/common.env
+    networks:
+      monitoring:
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./zabbix-server/externalscripts:/usr/lib/zabbix/externalscripts:ro
+      - ./zabbix-server/alertscripts:/usr/lib/zabbix/alertscripts:ro
+      #- /mnt/cloud-monitor/deploy/zabbix-server/crypt/certs:/var/lib/zabbix/enc:ro
+    ports:
+      - "10055:10051"
+
+  zabbix-frontend:
+    image: zabbix/zabbix-web-nginx-mysql:alpine-5.0.1
+    env_file:
+      - ./zabbix-frontend/envs/common.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - "monitoring"
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/data/grafana.ini:/etc/grafana/grafana.ini
+    ports:
+      - "3000:3000"
+    networks:
+      - "monitoring"
+
+networks:
+  monitoring:
+    external: true
+...

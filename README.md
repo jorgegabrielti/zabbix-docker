@@ -10,3 +10,5 @@ cd zabbix-docker/scripts
 ./boot-strap.sh
 ```
 
+### Docker Compose File
+

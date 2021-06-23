@@ -13,7 +13,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./zabbix-server/externalscripts:/usr/lib/zabbix/externalscripts:ro
       - ./zabbix-server/alertscripts:/usr/lib/zabbix/alertscripts:ro
-      #- /mnt/cloud-monitor/deploy/zabbix-server/crypt/certs:/var/lib/zabbix/enc:ro
     ports:
       - "10055:10051"
 
